@@ -15,9 +15,10 @@ import { nanoid } from 'nanoid';
 interface EducationProps {
   data: IEducationEntry[];
   onChange: (data: IEducationEntry[]) => void;
+  errors?: { [id: string]: Partial<Record<keyof IEducationEntry, string>> };
 }
 
-const Education = ({ data, onChange }: EducationProps) => {
+const Education = ({ data, onChange, errors = {} }: EducationProps) => {
   const addEducation = () => {
     const newEducation: IEducationEntry = {
       id: nanoid(6),
@@ -82,6 +83,8 @@ const Education = ({ data, onChange }: EducationProps) => {
                 label="Degree"
                 value={education.degree}
                 onChange={(e) => updateEducation(education.id!, 'degree', e.target.value)}
+                error={!!errors[education.id!]?.degree}
+                helperText={errors[education.id!]?.degree}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -91,15 +94,19 @@ const Education = ({ data, onChange }: EducationProps) => {
                 label="Field of Study"
                 value={education.field}
                 onChange={(e) => updateEducation(education.id!, 'field', e.target.value)}
+                error={!!errors[education.id!]?.field}
+                helperText={errors[education.id!]?.field}
               />
             </MuiGrid>
-            <MuiGrid sx={{ xs: 12 }}>
+            <MuiGrid sx={{ xs: 12 }}> 
               <TextField
                 required
                 fullWidth
                 label="Institution"
                 value={education.institution}
                 onChange={(e) => updateEducation(education.id!, 'institution', e.target.value)}
+                error={!!errors[education.id!]?.institution}
+                helperText={errors[education.id!]?.institution}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -111,6 +118,8 @@ const Education = ({ data, onChange }: EducationProps) => {
                 value={education.startDate}
                 onChange={(e) => updateEducation(education.id!, 'startDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors[education.id!]?.startDate}
+                helperText={errors[education.id!]?.startDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -122,6 +131,8 @@ const Education = ({ data, onChange }: EducationProps) => {
                 value={education.endDate}
                 onChange={(e) => updateEducation(education.id!, 'endDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors[education.id!]?.endDate}
+                helperText={errors[education.id!]?.endDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -130,6 +141,8 @@ const Education = ({ data, onChange }: EducationProps) => {
                 label="Grade/CGPA"
                 value={education.grade}
                 onChange={(e) => updateEducation(education.id!, 'grade', e.target.value)}
+                error={!!errors[education.id!]?.grade}
+                helperText={errors[education.id!]?.grade}
               />
             </MuiGrid>
           </MuiGrid>

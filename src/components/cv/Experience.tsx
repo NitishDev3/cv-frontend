@@ -17,9 +17,10 @@ import { nanoid } from 'nanoid';
 interface ExperienceProps {
   data: IExperienceEntry[];
   onChange: (data: IExperienceEntry[]) => void;
+  errors?: { [id: string]: Partial<Record<keyof IExperienceEntry, string>> };
 }
 
-const Experience = ({ data, onChange }: ExperienceProps) => {
+const Experience = ({ data, onChange, errors = {} }: ExperienceProps) => {
 
   const addExperience = () => {
     const newExperience: IExperienceEntry = {
@@ -95,6 +96,8 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                 onChange={(e) =>
                   updateExperience(experience.id!, "title", e.target.value)
                 }
+                error={!!errors[experience.id]?.title}
+                helperText={errors[experience.id]?.title}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -106,6 +109,8 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                 onChange={(e) =>
                   updateExperience(experience.id!, "company", e.target.value)
                 }
+                error={!!errors[experience.id]?.company}
+                helperText={errors[experience.id]?.company}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12 }}>
@@ -117,6 +122,8 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                 onChange={(e) =>
                   updateExperience(experience.id!, "location", e.target.value)
                 }
+                error={!!errors[experience.id]?.location}
+                helperText={errors[experience.id]?.location}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -130,6 +137,8 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                   updateExperience(experience.id!, "startDate", e.target.value)
                 }
                 InputLabelProps={{ shrink: true }}
+                error={!!errors[experience.id]?.startDate}
+                helperText={errors[experience.id]?.startDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -144,6 +153,8 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                 }
                 InputLabelProps={{ shrink: true }}
                 disabled={experience.current}
+                error={!!errors[experience.id]?.endDate}
+                helperText={errors[experience.id]?.endDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12 }}>
@@ -183,7 +194,11 @@ const Experience = ({ data, onChange }: ExperienceProps) => {
                     e.target.value.split("\n")
                   )
                 }
-                helperText="Each new line will be saved as a separate responsibility/achievement"
+                helperText={
+                  errors[experience.id]?.roleDescription ||
+                  "Each new line will be saved as a separate responsibility/achievement"
+                }
+                error={!!errors[experience.id]?.roleDescription}
               />
             </MuiGrid>
           </MuiGrid>

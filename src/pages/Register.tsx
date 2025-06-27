@@ -25,7 +25,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterFormData } from '../utils/validations/authValidations';
-import { setUser } from '../store/slices/authSlice';
+// import { setUser } from '../store/slices/authSlice';
 import { authService } from '../api/authService';
 import type { AppDispatch, RootState } from '../store';
 import Loading from '../components/Loading';
@@ -80,78 +80,32 @@ const Register = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await authService.loginWithGoogle();
-      dispatch(setUser(response.user));
-      dispatch(setToast({
-        open: true,
-        message: 'Logged in successfully',
-        severity: 'success'
-      }));
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Google login failed');
-      dispatch(setToast({
-        open: true,
-        message: 'Google login failed',
-        severity: 'error'
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await authService.loginWithFacebook();
-      dispatch(setUser(response.user));
-      dispatch(setToast({
-        open: true,
-        message: 'Logged in successfully',
-        severity: 'success'
-      }));
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Facebook login failed');
-      dispatch(setToast({
-        open: true,
-        message: 'Facebook login failed',
-        severity: 'error'
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(()=>{
     if(isAuthenticated){
       navigate('/dashboard');
     }
   },[isAuthenticated, navigate])
 
-  return isAuthenticated ? <Loading /> : (
+  return isAuthenticated ? (
+    <Loading />
+  ) : (
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
           marginTop: 6,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <Paper
           elevation={3}
           sx={{
             padding: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
           }}
         >
           <Typography component="h1" variant="h5" gutterBottom>
@@ -159,12 +113,16 @@ const Register = () => {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+            <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
               {error}
             </Alert>
           )}
 
-          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 0, width: '100%' }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{ mt: 0, width: "100%" }}
+          >
             <Controller
               name="username"
               control={control}
@@ -225,7 +183,7 @@ const Register = () => {
                   label="Contact Number (Optional)"
                   autoComplete="tel"
                   error={!!errors.contactNumber}
-                  helperText={errors.contactNumber?.message}  
+                  helperText={errors.contactNumber?.message}
                 />
               )}
             />
@@ -240,7 +198,7 @@ const Register = () => {
                   required
                   fullWidth
                   label="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   autoComplete="new-password"
                   error={!!errors.password}
@@ -269,10 +227,10 @@ const Register = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={isLoading}
             >
-              {isLoading ? 'Creating account...' : 'Register'}
+              {isLoading ? "Creating account..." : "Register"}
             </Button>
 
-            <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Box sx={{ textAlign: "center", mb: 2 }}>
               Already have an account?{" "}
               <Link component={RouterLink} to="/login" variant="body2">
                 Sign In
@@ -281,25 +239,28 @@ const Register = () => {
 
             <Divider sx={{ my: 2 }}>OR</Divider>
 
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-              >
-                Google
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<FacebookIcon />}
-                onClick={handleFacebookLogin}
-                disabled={isLoading}
-              >
-                Facebook
-              </Button>
+            <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+              <a href="http://localhost:5000/api/auth/google">
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GoogleIcon />}
+                  // onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                >
+                  Google
+                </Button>
+              </a>
+              <a href="http://localhost:5000/api/auth/facebook">
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<FacebookIcon />}
+                  disabled={isLoading}
+                >
+                  Facebook
+                </Button>
+              </a>
             </Box>
           </Box>
         </Paper>

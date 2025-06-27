@@ -34,14 +34,13 @@ import { deleteCV, resetCurrentCV, setCurrentCV, setCVs } from '../store/slices/
 import type { AppDispatch, RootState } from '../store/index';
 import type { ICVData } from '../types/cv';
 import { setToast } from '../store/slices/configSlice';
+import { genratePDF } from '../utils/jspdfConfig';
 
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [selectedCV, setSelectedCV] = useState<number | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const [selectedCV, setSelectedCV] = useState<ICVData | null>(null);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState<'download' | 'share' | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const cvs = useSelector((store: RootState) => store.cv.cvs);
@@ -68,8 +67,7 @@ const Dashboard = () => {
   };
 
   const handleDownload = (cvId: string) => {
-    setSelectedCV(cvId);
-    setActionType('download');
+    setSelectedCV(cvs.find((cv) => cv._id === cvId)!);
     setPaymentDialogOpen(true);
   };
 
@@ -94,13 +92,7 @@ const Dashboard = () => {
   const handlePaymentConfirm = () => {
     // Implement payment processing logic here
     setPaymentDialogOpen(false);
-    if (actionType === 'download') {
-      // Implement download logic
-      console.log('Downloading CV:', selectedCV);
-    } else if (actionType === 'share') {
-      // Implement share logic
-      console.log('Sharing CV:', selectedCV);
-    }
+    genratePDF(selectedCV!)
   };
 
   const handleCreateNew = () => {
@@ -195,23 +187,6 @@ const Dashboard = () => {
           )})}
       </Grid>
 
-      {/* Preview Dialog */}
-      <Dialog
-        open={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>CV Preview</DialogTitle>
-        <DialogContent>
-          {/* Add your CV preview component here */}
-          <Typography>Preview content for CV {selectedCV}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPreviewOpen(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
-
       {/* Payment Dialog */}
       <Dialog
         open={paymentDialogOpen}
@@ -227,7 +202,7 @@ const Dashboard = () => {
         </DialogTitle>
         <DialogContent>
           <Typography>
-            To {actionType} your CV, a payment of $5 is required. Would you like to proceed?
+            To download your CV, a payment of $5 is required. Would you like to proceed?
           </Typography>
         </DialogContent>
         <DialogActions>

@@ -17,9 +17,10 @@ import { nanoid } from 'nanoid';
 interface ProjectsProps {
   data: IProjectEntry[];
   onChange: (data: IProjectEntry[]) => void;
+  errors?: { [id: string]: Partial<Record<keyof IProjectEntry, string>> };
 }
 
-const Projects = ({ data, onChange }: ProjectsProps) => {
+const Projects = ({ data, onChange, errors = {} }: ProjectsProps) => {
   const addProject = () => {
     const newProject: IProjectEntry = {
       id: nanoid(6),
@@ -84,6 +85,8 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                 label="Project Name"
                 value={project.name}
                 onChange={(e) => updateProject(project.id!, 'name', e.target.value)}
+                error={!!errors[project.id!]?.name}
+                helperText={errors[project.id!]?.name}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12 }}>
@@ -94,6 +97,8 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                 rows={3}
                 value={project.description || ''}
                 onChange={(e) => updateProject(project.id!, 'description', e.target.value)}
+                error={!!errors[project.id!]?.description}
+                helperText={errors[project.id!]?.description}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12 }}>
@@ -108,16 +113,21 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                     {...params}
                     fullWidth
                     label="Technologies Used"
-                    helperText="Add technologies, frameworks, and tools used"
+                    helperText={errors[project.id!]?.technologies || "Add technologies, frameworks, and tools used"}
+                    error={!!errors[project.id!]?.technologies}
                   />
                 )}
                 renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option}
-                      {...getTagProps({ index })}
-                    />
-                  ))
+                  value.map((option, index) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        key={key}
+                        label={option}
+                        {...tagProps}
+                      />
+                    );
+                  })
                 }
               />
             </MuiGrid>
@@ -129,6 +139,8 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                 value={project.startDate || ''}
                 onChange={(e) => updateProject(project.id!, 'startDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors[project.id!]?.startDate}
+                helperText={errors[project.id!]?.startDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -139,6 +151,8 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                 value={project.endDate || ''}
                 onChange={(e) => updateProject(project.id!, 'endDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
+                error={!!errors[project.id!]?.endDate}
+                helperText={errors[project.id!]?.endDate}
               />
             </MuiGrid>
             <MuiGrid sx={{ xs: 12 }}>
@@ -147,7 +161,8 @@ const Projects = ({ data, onChange }: ProjectsProps) => {
                 label="Project URL"
                 value={project.url || ''}
                 onChange={(e) => updateProject(project.id!, 'url', e.target.value)}
-                helperText="Link to the project (GitHub, live demo, etc.)"
+                helperText={errors[project.id!]?.url || "Link to the project (GitHub, live demo, etc.)"}
+                error={!!errors[project.id!]?.url}
               />
             </MuiGrid>
           </MuiGrid>

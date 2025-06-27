@@ -1,6 +1,6 @@
 //basic details
 export interface IBasicDetailsData {
-  image: string;
+  image: string | File;
   name: string;
   email: string;
   phone: string;
@@ -51,17 +51,11 @@ export interface IProjectEntry {
 }
 
 //skills
-export interface ISkillObject {
+export interface ISkills {
   id: string;
   _id?: string;
   name: string;
   proficiency: number;
-}
-
-export interface ISkillsEntry {
-  id?: string;
-  _id?: string;
-  skills: ISkillObject[];
 }
 
 //social profiles
@@ -81,7 +75,7 @@ export interface ICVData {
   education: IEducationEntry[];
   experience: IExperienceEntry[];
   projects: IProjectEntry[];
-  skills: ISkillsEntry[];
+  skills: ISkills[];
   socialProfiles: ISocialProfile[];
   updatedAt?: string;
   createdAt?: string;

@@ -25,9 +25,9 @@ export const authService = {
   },
 
   async loginWithGoogle() {
-    const response = await axios.get(`${API_URL}/auth/google`);
+    await axios.get(`${API_URL}/auth/google`);
     // console.log(response.data.user);
-    return response.data.user;
+    return;
   },
 
   async loginWithFacebook() {

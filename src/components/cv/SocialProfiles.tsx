@@ -19,6 +19,7 @@ import { nanoid } from 'nanoid';
 interface SocialProfilesProps {
   data: ISocialProfile[];
   onChange: (data: ISocialProfile[]) => void;
+  errors: { [id: string]: Partial<Record<string, string>> };
 }
 
 const PLATFORMS = [
@@ -32,7 +33,7 @@ const PLATFORMS = [
   'Other',
 ];
 
-const SocialProfiles = ({ data, onChange }: SocialProfilesProps) => {
+const SocialProfiles = ({ data, onChange, errors }: SocialProfilesProps) => {
   const addProfile = () => {
     const newProfile: ISocialProfile = {
       id: nanoid(6),
@@ -93,6 +94,8 @@ const SocialProfiles = ({ data, onChange }: SocialProfilesProps) => {
                   value={profile.platform}
                   label="Platform"
                   onChange={(e) => updateProfile(profile.id!, 'platform', e.target.value)}
+                  error={!!errors[profile.id!]?.platform}
+                  // helperText={errors[profile.id!]?.platform} //not working
                 >
                   {PLATFORMS.map((platform) => (
                     <MenuItem key={platform} value={platform}>
@@ -110,8 +113,10 @@ const SocialProfiles = ({ data, onChange }: SocialProfilesProps) => {
                 value={profile.url}
                 onChange={(e) => updateProfile(profile.id!, 'url', e.target.value)}
                 placeholder="https://..."
-                helperText="Enter the complete URL to your profile"
-              />
+                // helperText="Enter the complete URL to your profile"
+                error={!!errors[profile.id!]?.url}
+                helperText={errors[profile.id!]?.url}
+                />
             </MuiGrid>
           </MuiGrid>
         </Paper>

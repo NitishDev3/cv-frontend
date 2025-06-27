@@ -70,7 +70,7 @@ const CVTemplate = ({ cvData }: ICvPreviewProps) => {
         Skills
       </Typography>
       <Stack direction="row" spacing={1} flexWrap="wrap">
-        {skills[0]?.skills.map((skill, index) => (
+        {skills?.map((skill, index) => (
           <Chip key={index} label={skill.name} variant="outlined" />
         ))}
       </Stack>

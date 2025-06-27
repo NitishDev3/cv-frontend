@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -13,23 +13,28 @@ import type { IBasicDetailsData } from '../../types/cv';
 interface BasicDetailsProps {
   data: IBasicDetailsData;
   onChange: (data: IBasicDetailsData) => void;
+  errors?: Partial<Record<keyof IBasicDetailsData, string>>;
 }
 
-const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
-  const [imagePreview, setImagePreview] = useState<string>(data.image);
+const BasicDetails = ({ data, onChange, errors = {} }: BasicDetailsProps) => {
+  const [imagePreview, setImagePreview] = useState<string | File>(data.image);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setImagePreview(result);
-        onChange({ ...data, image: result });
-      };
-      reader.readAsDataURL(file);
+      // For preview purpose only
+      const objectURL = URL.createObjectURL(file);
+      setImagePreview(objectURL);
+
+      // Store the actual File object for binary upload
+      onChange({ ...data, image: file });
     }
   };
+
+  const handleClearImage = () =>{
+    onChange({ ...data, image: "" });
+    setImagePreview("");
+  }
 
   const handleChange = (field: keyof IBasicDetailsData) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -50,7 +55,7 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
           alt="Profile"
           sx={{ width: 100, height: 100, mr: 2 }}
         />
-        <Box>
+        <Box sx={{display: "flex", gap: "20px"}}>
           <input
             accept="image/*"
             style={{ display: 'none' }}
@@ -60,12 +65,19 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
           />
           <label htmlFor="profile-image-upload">
             <Button
-              variant="outlined"
+              variant="contained"
               component="span"
               startIcon={<PhotoCameraIcon />}
             >
               Upload Photo
             </Button>
+          </label>
+          <label htmlFor="profile-image-remove">
+            <Button
+            variant="outlined"
+            component="span"
+            onClick={handleClearImage}
+          >Clear</Button>  
           </label>
         </Box>
       </Box>
@@ -79,6 +91,8 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
             label="Full Name"
             value={data.name}
             onChange={handleChange('name')}
+            error={!!errors.name}
+            helperText={errors.name}
           />
         </MuiGrid>
 
@@ -90,7 +104,8 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
             label="Designation"
             value={data.designation}
             onChange={handleChange('designation')}
-            helperText="Your current job title or role"
+            helperText={errors.designation || "Your current job title or role"}
+            error={!!errors.designation}
           />
         </MuiGrid>
 
@@ -103,6 +118,8 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
             type="email"
             value={data.email}
             onChange={handleChange('email')}
+            error={!!errors.email}
+            helperText={errors.email}
           />
         </MuiGrid>
         <MuiGrid sx={{ xs: 12, sm: 6 }}>
@@ -112,6 +129,8 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
             label="Phone Number"
             value={data.phone}
             onChange={handleChange('phone')}
+            error={!!errors.phone}
+            helperText={errors.phone}
           />
         </MuiGrid>
 
@@ -123,6 +142,8 @@ const BasicDetails = ({ data, onChange }: BasicDetailsProps) => {
             label="City"
             value={data.city}
             onChange={handleChange('city')}
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </MuiGrid>
       </MuiGrid>
